@@ -1,3 +1,13 @@
+---
+title: Football Value Intelligence
+emoji: ⚽
+colorFrom: green
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Football Value Intelligence
 
 A football transfer analytics platform that estimates player fair market value from performance statistics, then surfaces clubs that overpaid or underpaid relative to that estimate. The core output is an **arbitrage residual** — the gap between what a club paid and what the model thinks the player was worth — ranked across 13,000+ disclosed transfers.
