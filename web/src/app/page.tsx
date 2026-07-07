@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, PlayerDetail, PlayerSearchResult, fmtEur } from "@/lib/api";
 import ValueBar from "@/components/ValueBar";
@@ -9,6 +9,14 @@ import ConfidenceNote from "@/components/ConfidenceNote";
 import Link from "next/link";
 
 export default function PlayerLookupPage() {
+  return (
+    <Suspense>
+      <PlayerLookupContent />
+    </Suspense>
+  );
+}
+
+function PlayerLookupContent() {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PlayerSearchResult[]>([]);
