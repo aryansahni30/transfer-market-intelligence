@@ -1,12 +1,20 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, SimilarPlayer, PlayerSearchResult, fmtEur } from "@/lib/api";
 import ConfidenceNote from "@/components/ConfidenceNote";
 import Link from "next/link";
 
 export default function SimilarityPage() {
+  return (
+    <Suspense>
+      <SimilarityContent />
+    </Suspense>
+  );
+}
+
+function SimilarityContent() {
   const searchParams = useSearchParams();
   const initialId = searchParams.get("player_id");
   const initialName = searchParams.get("name");
