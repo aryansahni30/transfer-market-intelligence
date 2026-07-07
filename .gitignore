@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Raw data (large, not committed)
+data/raw/
+
+# Processed data and models ARE committed (small enough, ~31MB total)
+# data/processed/ — committed
+# models/ — committed
+
+# MLflow artifacts (large run artifacts)
+mlruns/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node / Next.js
+web/node_modules/
+web/.next/
+web/.env
+web/.env.local
+web/.env.*.local
+web/out/
+
+# Misc
+*.log
+*.tmp
+.pytest_cache/
+.coverage
+htmlcov/
