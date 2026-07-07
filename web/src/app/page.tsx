@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { api, PlayerDetail, PlayerSearchResult, fmtEur } from "@/lib/api";
 import ValueBar from "@/components/ValueBar";
 import ResidualBadge from "@/components/ResidualBadge";
@@ -8,6 +9,7 @@ import ConfidenceNote from "@/components/ConfidenceNote";
 import Link from "next/link";
 
 export default function PlayerLookupPage() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PlayerSearchResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -44,6 +46,23 @@ export default function PlayerLookupPage() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  // Auto-load player when arriving via ?player=<id> link
+  useEffect(() => {
+    const playerId = searchParams.get("player");
+    if (!playerId) return;
+    setLoading(true);
+    setError(null);
+    api.getPlayer(Number(playerId))
+      .then((detail) => {
+        setSelected(detail);
+        setQuery(detail.name);
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load player"))
+      .finally(() => setLoading(false));
+  // Only run on mount / when search params change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   async function selectPlayer(p: PlayerSearchResult) {
     setShowDropdown(false);
