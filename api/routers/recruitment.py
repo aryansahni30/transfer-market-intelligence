@@ -16,9 +16,11 @@ class RecruitmentCandidate(BaseModel):
     player_id: int
     name: str
     position_group: str
+    sub_position: str | None
     age: float
     club: str | None
     league: str | None
+    league_tier: int | None
     predicted_fair_value: float
     asking_price: float | None  # market_value_in_eur as proxy
     value_ratio: float | None   # predicted_fair_value / asking_price
@@ -73,13 +75,18 @@ async def get_candidates(
 
     def _row(r) -> RecruitmentCandidate:
         asking = float(r[asking_col]) if asking_col in r and r[asking_col] == r[asking_col] else None
+        raw_tier = r.get("dest_club_tier")
+        tier = int(raw_tier) if raw_tier is not None and raw_tier == raw_tier else None
+        sub_pos = r.get("sub_position")
         return RecruitmentCandidate(
             player_id=int(r.get("player_id", 0)),
             name=str(r.get("name", "")),
             position_group=str(r.get("position_group", "")),
+            sub_position=str(sub_pos) if sub_pos is not None else None,
             age=float(r.get("age", 0)),
             club=r.get("current_club_name"),
             league=r.get("competition_name"),
+            league_tier=tier,
             predicted_fair_value=float(r["predicted_fair_value"]),
             asking_price=asking,
             value_ratio=float(r["value_ratio"]) if r.get("value_ratio") is not None else None,
