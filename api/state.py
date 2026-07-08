@@ -39,14 +39,20 @@ class AppState:
         arbitrage_path = data_dir / "arbitrage_board.parquet"
 
         if players_path.exists():
-            self.players_df = pd.read_parquet(players_path)
-            logger.info("Loaded players: %d rows", len(self.players_df))
+            try:
+                self.players_df = pd.read_parquet(players_path)
+                logger.info("Loaded players: %d rows", len(self.players_df))
+            except Exception as exc:
+                logger.warning("Could not load players_enriched.parquet: %s", exc)
         else:
             logger.warning("players_enriched.parquet not found at %s", players_path)
 
         if arbitrage_path.exists():
-            self.arbitrage_df = pd.read_parquet(arbitrage_path)
-            logger.info("Loaded arbitrage board: %d rows", len(self.arbitrage_df))
+            try:
+                self.arbitrage_df = pd.read_parquet(arbitrage_path)
+                logger.info("Loaded arbitrage board: %d rows", len(self.arbitrage_df))
+            except Exception as exc:
+                logger.warning("Could not load arbitrage_board.parquet: %s", exc)
         else:
             logger.warning("arbitrage_board.parquet not found at %s", arbitrage_path)
 
