@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, SimilarPlayer, PlayerSearchResult, fmtEur } from "@/lib/api";
 import ConfidenceNote from "@/components/ConfidenceNote";
+import ValueLedgerMark from "@/components/ValueLedgerMark";
 import Link from "next/link";
 
 export default function SimilarityPage() {
@@ -22,9 +23,7 @@ function SimilarityContent() {
   const [query, setQuery] = useState(initialName ?? "");
   const [results, setResults] = useState<PlayerSearchResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(
-    initialId ? Number(initialId) : null
-  );
+  const [selectedId, setSelectedId] = useState<number | null>(initialId ? Number(initialId) : null);
   const [selectedName, setSelectedName] = useState(initialName ?? "");
   const [cheaperOnly, setCheaperOnly] = useState(false);
   const [similar, setSimilar] = useState<SimilarPlayer[]>([]);
@@ -76,7 +75,6 @@ function SimilarityContent() {
     }
   }, []);
 
-  // Auto-load if arrived via link with player_id
   useEffect(() => {
     if (selectedId) {
       fetchSimilar(selectedId, cheaperOnly);
@@ -102,47 +100,59 @@ function SimilarityContent() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold mb-2">Similar Players</h1>
-      <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
+      {/* Header */}
+      <h1
+        className="text-3xl mb-1"
+        style={{ fontFamily: "var(--font-fraunces)", fontWeight: 600, color: "var(--parchment)" }}
+      >
+        Similarity Map
+      </h1>
+      <p className="text-xs mb-8" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-public-sans)" }}>
         Find players with the most similar statistical profiles. Toggle{" "}
-        <strong>Cheaper Only</strong> to restrict to players whose fair value is lower.
+        <span style={{ color: "var(--gold)" }}>Cheaper Only</span> to restrict to players whose fair value is lower.
       </p>
 
       {/* Search + controls */}
       <div
-        className="rounded-xl p-5 mb-6 flex flex-col gap-4 md:flex-row md:items-end"
-        style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+        className="p-5 mb-6 flex flex-col gap-4 md:flex-row md:items-end"
+        style={{ background: "var(--panel)", border: "1px solid var(--hairline)", borderRadius: "4px" }}
       >
         <div className="flex-1 relative" ref={dropdownRef}>
-          <label className="text-xs block mb-1" style={{ color: "var(--text-secondary)" }}>
-            Player
+          <label
+            className="text-xs block mb-1.5"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)", letterSpacing: "0.06em" }}
+          >
+            PLAYER
           </label>
           <input
             type="text"
-            placeholder="Search player name…"
+            placeholder="> search player…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+            className="w-full px-3 py-2 text-sm outline-none"
             style={{
-              background: "var(--surface2)",
-              border: "1px solid var(--border)",
-              color: "var(--text-primary)",
+              background: "var(--ink)",
+              border: "1px solid var(--hairline)",
+              color: "var(--parchment)",
+              borderRadius: "4px",
+              fontFamily: "var(--font-ibm-plex-mono)",
+              caretColor: "var(--gold)",
             }}
           />
           {showDropdown && (
             <div
-              className="absolute top-full left-0 right-0 z-50 rounded-lg mt-1 overflow-hidden"
-              style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+              className="absolute top-full left-0 right-0 z-50 mt-0.5 overflow-hidden"
+              style={{ background: "var(--panel)", border: "1px solid var(--hairline)", borderRadius: "4px" }}
             >
               {results.map((p) => (
                 <button
                   key={p.player_id}
                   onClick={() => selectPlayer(p)}
-                  className="w-full px-4 py-2 text-left text-sm hover:opacity-80 transition-opacity flex items-center justify-between"
-                  style={{ borderBottom: "1px solid var(--border)" }}
+                  className="w-full px-4 py-2 text-left text-xs hover:opacity-80 transition-opacity flex items-center justify-between"
+                  style={{ borderBottom: "1px solid var(--hairline)" }}
                 >
-                  <span>{p.name}</span>
-                  <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                  <span style={{ color: "var(--parchment)" }}>{p.name}</span>
+                  <span style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}>
                     {p.position_group} · {p.current_club_name ?? "—"}
                   </span>
                 </button>
@@ -151,23 +161,28 @@ function SimilarityContent() {
           )}
         </div>
 
+        {/* Cheaper only toggle */}
         <div className="flex items-center gap-3">
-          <label className="text-xs" style={{ color: "var(--text-secondary)" }}>
-            Cheaper Only
+          <label
+            className="text-xs"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)", letterSpacing: "0.04em" }}
+          >
+            CHEAPER ONLY
           </label>
           <button
             onClick={toggleCheaper}
-            className="relative w-10 h-5 rounded-full transition-colors"
+            className="relative w-10 h-5 transition-colors"
             style={{
-              background: cheaperOnly ? "var(--accent-blue)" : "var(--surface2)",
-              border: "1px solid var(--border)",
+              background: cheaperOnly ? "var(--gold)" : "var(--ink)",
+              border: `1px solid ${cheaperOnly ? "var(--gold)" : "var(--hairline)"}`,
+              borderRadius: "10px",
             }}
             aria-pressed={cheaperOnly}
           >
             <span
               className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full transition-transform"
               style={{
-                background: "#fff",
+                background: cheaperOnly ? "var(--ink)" : "var(--hairline)",
                 transform: cheaperOnly ? "translateX(20px)" : "translateX(0)",
               }}
             />
@@ -177,39 +192,60 @@ function SimilarityContent() {
 
       {error && (
         <div
-          className="rounded-lg px-4 py-3 text-sm mb-4"
-          style={{ background: "#2a1a1a", color: "var(--accent-red)", border: "1px solid #5a2020" }}
+          className="px-4 py-3 text-xs mb-4"
+          style={{ background: "#1E1212", color: "var(--brick)", border: "1px solid #4A2020", borderRadius: "4px" }}
         >
           {error}
         </div>
       )}
 
       {loading && (
-        <div className="text-center py-12" style={{ color: "var(--text-secondary)" }}>
-          Loading…
+        <div
+          className="text-center py-12 text-xs"
+          style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}
+        >
+          LOADING…
         </div>
       )}
 
+      {/* Empty state */}
       {!loaded && !loading && (
-        <div className="rounded-xl p-12 text-center" style={{ border: "1px dashed var(--border)" }}>
-          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            Search for a player to find their statistical twins
+        <div
+          className="flex items-center gap-6 px-6 py-8"
+          style={{ border: "1px solid var(--hairline)", borderRadius: "4px" }}
+        >
+          <div className="flex-1">
+            <ValueLedgerMark predicted={undefined} actual={undefined} dormant />
+          </div>
+          <p className="text-xs shrink-0" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}>
+            SEARCH A PLAYER TO FIND STATISTICAL TWINS
           </p>
         </div>
       )}
 
       {loaded && similar.length === 0 && (
-        <p className="text-center py-8 text-sm" style={{ color: "var(--text-secondary)" }}>
-          No similar players found{cheaperOnly ? " within cheaper-only filter" : ""}.
-        </p>
+        <div
+          className="flex items-center gap-6 px-6 py-8"
+          style={{ border: "1px solid var(--hairline)", borderRadius: "4px" }}
+        >
+          <div className="flex-1">
+            <ValueLedgerMark predicted={undefined} actual={undefined} dormant />
+          </div>
+          <p className="text-xs shrink-0" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}>
+            NO SIMILAR PLAYERS FOUND{cheaperOnly ? " — CHEAPER ONLY" : ""}
+          </p>
+        </div>
       )}
 
       {similar.length > 0 && (
         <>
-          <p className="text-xs mb-3" style={{ color: "var(--text-secondary)" }}>
-            Top {similar.length} statistical twins for{" "}
-            <strong style={{ color: "var(--text-primary)" }}>{selectedName}</strong>
-            {cheaperOnly ? " · cheaper only" : ""}
+          <p
+            className="text-xs mb-3"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}
+          >
+            TOP {similar.length} TWINS FOR{" "}
+            <span style={{ color: "var(--parchment)" }}>{selectedName.toUpperCase()}</span>
+            {cheaperOnly ? " · CHEAPER ONLY" : ""}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             {similar.map((p) => (
@@ -227,22 +263,27 @@ function SimilarCard({ player: p }: { player: SimilarPlayer }) {
   const pct = Math.round(p.similarity_score * 100);
   return (
     <div
-      className="rounded-xl p-4 flex flex-col gap-3"
-      style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+      className="p-4 flex flex-col gap-3"
+      style={{
+        background: "var(--panel)",
+        border: "1px solid var(--hairline)",
+        borderRadius: "4px",
+      }}
     >
       <div className="flex items-start justify-between gap-2">
         <div>
           <Link
             href={`/?player=${p.player_id}`}
             className="font-semibold text-sm hover:underline"
+            style={{ color: "var(--parchment)", fontFamily: "var(--font-fraunces)" }}
           >
             {p.name}
           </Link>
-          <p className="text-xs mt-0.5" style={{ color: "var(--text-secondary)" }}>
-            {p.position_group} · Age {p.age} · {p.club ?? "—"}
+          <p className="text-xs mt-0.5" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}>
+            {p.position_group} · AGE {p.age} · {p.club ?? "—"}
           </p>
           {p.league && (
-            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+            <p className="text-xs" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)" }}>
               {p.league}
             </p>
           )}
@@ -250,9 +291,16 @@ function SimilarCard({ player: p }: { player: SimilarPlayer }) {
         <SimilarityPill pct={pct} />
       </div>
 
+      {/* Value Ledger Mark for each similar player */}
+      <ValueLedgerMark
+        predicted={p.predicted_fair_value}
+        actual={p.market_value_in_eur}
+        variant="static"
+      />
+
       <div className="grid grid-cols-2 gap-2">
-        <StatBox label="Fair Value" value={fmtEur(p.predicted_fair_value)} />
-        <StatBox label="Market Value" value={fmtEur(p.market_value_in_eur)} />
+        <StatBox label="FAIR VALUE" value={fmtEur(p.predicted_fair_value)} />
+        <StatBox label="MARKET VALUE" value={fmtEur(p.market_value_in_eur)} />
       </div>
     </div>
   );
@@ -260,24 +308,42 @@ function SimilarCard({ player: p }: { player: SimilarPlayer }) {
 
 function SimilarityPill({ pct }: { pct: number }) {
   const color =
-    pct >= 85 ? "var(--accent-green)" : pct >= 70 ? "var(--accent-amber)" : "var(--text-secondary)";
+    pct >= 85 ? "var(--verdigris)" : pct >= 70 ? "var(--gold)" : "var(--text-secondary)";
   return (
     <span
-      className="shrink-0 text-xs font-mono font-semibold px-2 py-1 rounded-lg"
-      style={{ background: "var(--surface2)", color, border: "1px solid var(--border)" }}
+      className="shrink-0 text-xs font-semibold px-2 py-1"
+      style={{
+        background: "var(--ink)",
+        color,
+        border: "1px solid var(--hairline)",
+        borderRadius: "4px",
+        fontFamily: "var(--font-ibm-plex-mono)",
+        whiteSpace: "nowrap",
+      }}
     >
-      {pct}% match
+      {pct}% MATCH
     </span>
   );
 }
 
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg px-3 py-2 text-center" style={{ background: "var(--surface2)" }}>
-      <div className="text-xs mb-0.5" style={{ color: "var(--text-secondary)" }}>
+    <div
+      className="px-3 py-2 text-center"
+      style={{ background: "var(--ink)", border: "1px solid var(--hairline)", borderRadius: "4px" }}
+    >
+      <div
+        className="text-xs mb-0.5"
+        style={{ color: "var(--text-secondary)", fontFamily: "var(--font-ibm-plex-mono)", letterSpacing: "0.06em" }}
+      >
         {label}
       </div>
-      <div className="font-mono text-xs font-semibold">{value}</div>
+      <div
+        className="text-xs font-semibold"
+        style={{ fontFamily: "var(--font-ibm-plex-mono)", fontVariantNumeric: "tabular-nums", color: "var(--parchment)" }}
+      >
+        {value}
+      </div>
     </div>
   );
 }

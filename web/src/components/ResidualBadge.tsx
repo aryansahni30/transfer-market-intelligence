@@ -9,14 +9,14 @@ export default function ResidualBadge({ residual, size = "md" }: ResidualBadgePr
   if (residual == null) return <span style={{ color: "var(--text-secondary)" }}>—</span>;
 
   const isUnderpaid = residual > 0;
-  const color = isUnderpaid ? "var(--accent-green)" : "var(--accent-red)";
+  const color = isUnderpaid ? "var(--verdigris)" : "var(--brick)";
   const label = isUnderpaid ? "UNDERVALUED" : "OVERVALUED";
   const textSize = size === "sm" ? "text-xs" : "text-sm";
 
   return (
     <span
       className={`inline-flex items-center gap-1 font-semibold ${textSize}`}
-      style={{ color }}
+      style={{ color, fontFamily: "var(--font-ibm-plex-mono)", fontVariantNumeric: "tabular-nums" }}
     >
       {isUnderpaid ? "▲" : "▼"} {fmtEur(Math.abs(residual))}
       <span className="font-normal opacity-70 text-xs ml-1">{label}</span>

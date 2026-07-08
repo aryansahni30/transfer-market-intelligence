@@ -1,31 +1,85 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════
+   MarketEdge Design Tokens
+═══════════════════════════════════════════ */
 :root {
-  --background: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #22263a;
-  --border: #2e3347;
-  --text-primary: #e8eaf0;
-  --text-secondary: #8b91a8;
-  --accent-green: #22c55e;
-  --accent-red: #ef4444;
-  --accent-blue: #3b82f6;
-  --accent-amber: #f59e0b;
+  /* Core palette */
+  --ink:        #10131A;
+  --panel:      #171B24;
+  --hairline:   #2A2F3B;
+  --parchment:  #E8E4D9;
+  --verdigris:  #4FBA8F;
+  --brick:      #C2483B;
+  --gold:       #D4A84B;
+
+  /* Motion */
+  --ease-precise: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Legacy aliases — keep existing component code working */
+  --background:    var(--ink);
+  --surface:       var(--panel);
+  --surface2:      #1E2330;
+  --border:        var(--hairline);
+  --text-primary:  var(--parchment);
+  --text-secondary: #6B7285;
+  --accent-green:  var(--verdigris);
+  --accent-red:    var(--brick);
+  --accent-amber:  var(--gold);
+  --accent-blue:   var(--gold);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--text-primary);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--ink);
+  --color-foreground: var(--parchment);
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 }
 
+/* ═══════════════════════════════════════════
+   Base
+═══════════════════════════════════════════ */
 body {
-  background: var(--background);
-  color: var(--text-primary);
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--surface); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+/* ═══════════════════════════════════════════
+   Keyframe Animations
+═══════════════════════════════════════════ */
+@keyframes band-reveal {
+  from { clip-path: inset(0 50% 0 50%); }
+  to   { clip-path: inset(0 0% 0 0%); }
+}
+
+@keyframes stamp-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Reduced-motion: disable all animations */
+@media (prefers-reduced-motion: reduce) {
+  .band-reveal { animation: none !important; clip-path: none !important; }
+  .stamp-in    { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+/* ═══════════════════════════════════════════
+   Scrollbar
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--panel); }
+::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 2px; }
+
+/* ═══════════════════════════════════════════
+   Select / Input — suppress chrome defaults
+═══════════════════════════════════════════ */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  opacity: 0.4;
+}
