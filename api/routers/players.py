@@ -4,10 +4,15 @@
 
 from __future__ import annotations
 
+import unicodedata
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
 from api.state import AppState
+
+
+def _strip_diacritics(s: str) -> str:
+    return unicodedata.normalize("NFD", s).encode("ascii", "ignore").decode("ascii")
 
 router = APIRouter()
 
@@ -33,16 +38,22 @@ class PlayerDetail(BaseModel):
 
 
 @router.get("/search")
-async def search_players(q: str = Query(..., min_length=2)) -> list[dict]:
+async def search_players(
+    q: str = Query(..., min_length=2),
+    limit: int = Query(20, ge=1, le=500),
+) -> list[dict]:
     """Full-text search on player name. Returns lightweight list."""
     state = AppState.get()
     if state.players_df.empty:
         return []
 
-    mask = state.players_df["name"].str.contains(q, case=False, na=False)
+    q_norm = _strip_diacritics(q).lower()
+    mask = state.players_df["name"].apply(
+        lambda n: q_norm in _strip_diacritics(str(n)).lower()
+    )
     cols = ["player_id", "name", "position_group", "age", "current_club_name"]
     available = [c for c in cols if c in state.players_df.columns]
-    return state.players_df[mask][available].head(20).to_dict(orient="records")
+    return state.players_df[mask][available].head(limit).to_dict(orient="records")
 
 
 @router.get("/{player_id}", response_model=PlayerDetail)
