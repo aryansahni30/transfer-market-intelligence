@@ -1,0 +1,118 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chalk: var(--chalk);
+  --color-pitch: var(--pitch);
+  --color-edge-pos: var(--edge-pos);
+  --color-edge-neg: var(--edge-neg);
+  --color-edge-pos-soft: var(--edge-pos-soft);
+  --color-edge-neg-soft: var(--edge-neg-soft);
+  --color-confidence-low: var(--confidence-low);
+  --color-confidence-mid: var(--confidence-mid);
+  --color-confidence-high: var(--confidence-high);
+}
+
+:root {
+  --radius: 0.375rem;
+
+  /* Pitch-night: near black with a green undertone */
+  --background: oklch(0.16 0.018 155);
+  --foreground: oklch(0.96 0.008 90);
+
+  --pitch: oklch(0.19 0.022 155);
+  --chalk: oklch(0.96 0.008 90 / 0.18);
+
+  --card: oklch(0.20 0.020 155);
+  --card-foreground: oklch(0.96 0.008 90);
+
+  --popover: oklch(0.18 0.020 155);
+  --popover-foreground: oklch(0.96 0.008 90);
+
+  --primary: oklch(0.90 0.18 128);
+  --primary-foreground: oklch(0.16 0.03 155);
+
+  --secondary: oklch(0.26 0.020 155);
+  --secondary-foreground: oklch(0.96 0.008 90);
+
+  --muted: oklch(0.24 0.018 155);
+  --muted-foreground: oklch(0.72 0.015 120);
+
+  --accent: oklch(0.28 0.030 145);
+  --accent-foreground: oklch(0.96 0.008 90);
+
+  --destructive: oklch(0.65 0.24 27);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.96 0.008 90 / 0.10);
+  --input: oklch(0.96 0.008 90 / 0.14);
+  --ring: oklch(0.90 0.18 128 / 0.6);
+
+  /* Signal accents */
+  --edge-pos: oklch(0.90 0.20 128);        /* electric lime — underpaid / steal */
+  --edge-pos-soft: oklch(0.90 0.20 128 / 0.14);
+  --edge-neg: oklch(0.68 0.24 27);         /* hot vermilion — overpaid */
+  --edge-neg-soft: oklch(0.68 0.24 27 / 0.14);
+
+  --confidence-high: oklch(0.90 0.20 128);
+  --confidence-mid: oklch(0.85 0.15 85);
+  --confidence-low: oklch(0.78 0.16 60);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse at 15% -10%, oklch(0.90 0.18 128 / 0.06), transparent 55%),
+      radial-gradient(ellipse at 100% 100%, oklch(0.68 0.24 27 / 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+  .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+  .font-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .tabular { font-variant-numeric: tabular-nums; }
+}
+
+@utility chalk-line {
+  background-image: linear-gradient(to right, var(--chalk) 50%, transparent 50%);
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+}
