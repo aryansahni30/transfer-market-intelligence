@@ -3,9 +3,8 @@ models/
 mlruns/
 venv/
 notebooks/
-src/
-api/
-web/
+/src/
+/api/
 *.parquet
 *.joblib
 *.faiss
