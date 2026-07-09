@@ -1,0 +1,15 @@
+data/
+models/
+mlruns/
+venv/
+notebooks/
+src/
+api/
+web/
+*.parquet
+*.joblib
+*.faiss
+*.pkl
+*.csv
+__pycache__/
+.venv/
